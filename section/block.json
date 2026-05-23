@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "roam/section",
+	"version": "1.0.0",
+	"title": "Roam Section",
+	"category": "design",
+	"icon": "layout",
+	"description": "A section in a Roam Canvas. Stacks naturally in the editor; on the frontend it becomes a tier in the nested infinite-zoom.",
+	"parent": ["roam/canvas"],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"inserter": true,
+		"anchor": false
+	},
+	"attributes": {
+		"anchorName":  { "type": "string", "default": "" },
+		"anchorLabel": { "type": "string", "default": "" },
+		"bgGradient":  { "type": "string", "default": "" },
+		"bgColor":     { "type": "string", "default": "" },
+		"accentColor": { "type": "string", "default": "" }
+	},
+	"textdomain": "roam",
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"editorStyle": "file:./style.css"
+}

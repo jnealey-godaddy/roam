@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "roam/canvas",
+	"version": "1.1.0",
+	"title": "Roam Canvas",
+	"category": "design",
+	"icon": "image-rotate",
+	"description": "An infinite, zoomable, pannable 2D canvas. Place nodes anywhere — readers pan and zoom instead of scrolling.",
+	"keywords": ["canvas", "pan", "zoom", "infinite", "roam"],
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"anchor": true
+	},
+	"attributes": {
+		"worldWidth":      { "type": "number",  "default": 4000 },
+		"worldHeight":     { "type": "number",  "default": 3000 },
+		"initialZoom":     { "type": "number",  "default": 1 },
+		"minZoom":         { "type": "number",  "default": 0.25 },
+		"maxZoom":         { "type": "number",  "default": 4 },
+		"initialX":        { "type": "number",  "default": 0 },
+		"initialY":        { "type": "number",  "default": 0 },
+		"hasInitialOffset":{ "type": "boolean", "default": false },
+		"showGrid":        { "type": "boolean", "default": true },
+		"viewMode":        { "type": "string",  "default": "boxed" },
+		"showAnchorMenu":  { "type": "boolean", "default": false },
+		"initialAnchor":   { "type": "string",  "default": "" },
+		"fitOnLoad":       { "type": "boolean", "default": false },
+		"nestedZoom":      { "type": "boolean", "default": false },
+		"flyDuration":     { "type": "number",  "default": 900 }
+	},
+	"textdomain": "roam",
+	"editorScript": "file:./editor.js",
+	"viewScript":   "file:./view.js",
+	"style":        "file:./style.css",
+	"editorStyle":  "file:./style.css"
+}

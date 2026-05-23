@@ -1,0 +1,242 @@
+/* =====================================================================
+ * Roam Section — editor styling (stacked card look)
+ * Frontend rendering is handled by canvas's PHP render_callback in
+ * nested-zoom mode, so this CSS only targets the editor.
+ * ===================================================================== */
+
+.roam-editor-section {
+	position: relative;
+	margin: 16px 0;
+	background: #0e0e12;
+	color: #f3f3f7;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 14px;
+	overflow: hidden;
+}
+
+.roam-editor-section.is-tier-0 {
+	border-color: rgba(125, 249, 196, 0.35);
+	box-shadow: 0 0 0 1px rgba(125, 249, 196, 0.15);
+}
+
+.roam-editor-section.is-active {
+	border-color: rgba(125, 249, 196, 0.55);
+	box-shadow: 0 0 0 1px rgba(125, 249, 196, 0.3);
+}
+
+.roam-editor-section-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 14px;
+	background: rgba(255, 255, 255, 0.04);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	font: 600 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.55);
+	user-select: none;
+	cursor: pointer;
+	transition: background 120ms ease;
+}
+
+.roam-editor-section-header:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: rgba(255, 255, 255, 0.85);
+}
+
+.roam-editor-section-header:focus-visible {
+	outline: 2px solid var(--roam-accent, #7df9c4);
+	outline-offset: -2px;
+}
+
+.roam-editor-section-chevron {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 14px;
+	height: 14px;
+	color: rgba(125, 249, 196, 0.85);
+	font-size: 11px;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.roam-editor-section-collapsed-tag {
+	margin-left: auto;
+	padding: 2px 8px;
+	background: rgba(255, 255, 255, 0.06);
+	border-radius: 999px;
+	font-size: 9px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	color: rgba(255, 255, 255, 0.5);
+	text-transform: uppercase;
+}
+
+.roam-editor-section.is-collapsed .roam-editor-section-inner {
+	display: none;
+}
+
+.roam-editor-section.is-collapsed .roam-editor-section-header {
+	border-bottom: none;
+}
+
+.roam-editor-section-tier {
+	display: inline-flex;
+	align-items: center;
+	padding: 3px 8px;
+	background: linear-gradient(135deg, #7df9c4, #b39dff);
+	color: #0a0a10;
+	border-radius: 4px;
+	font-weight: 800;
+	font-size: 10px;
+}
+
+.roam-editor-section-name {
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.85);
+	letter-spacing: 0.04em;
+	text-transform: none;
+	font-size: 12px;
+}
+
+.roam-editor-section-inner {
+	padding: 24px 28px 28px;
+	min-height: 120px;
+}
+
+/* Frontend section markup is hidden by the canvas render_callback in
+   nestedZoom mode (it generates positioned/scaled markup directly).
+   But if a section ever renders on its own (e.g., static save outside
+   nestedZoom), give it a sensible default. */
+.roam-section[data-roam-section] {
+	display: block;
+	margin: 32px 0;
+}
+
+/* =====================================================================
+ * Default landing-page typography inside a rendered section frame.
+ * The frame is 1280×720 (scaled down to fit each tier's world rect), so
+ * stock core/heading and core/paragraph blocks rendered inside it should
+ * look like a real hero/landing-page section by default. Authors can
+ * always override via Gutenberg's typography controls.
+ * ===================================================================== */
+
+.roam-section-frame h1 {
+	font-size: 120px;
+	line-height: 0.95;
+	letter-spacing: -0.03em;
+	font-weight: 800;
+	margin: 0 0 24px;
+}
+.roam-section-frame h2 {
+	font-size: 88px;
+	line-height: 1.02;
+	letter-spacing: -0.02em;
+	font-weight: 700;
+	margin: 0 0 20px;
+}
+.roam-section-frame h3 {
+	font-size: 40px;
+	line-height: 1.1;
+	font-weight: 700;
+	margin: 0 0 12px;
+}
+.roam-section-frame p {
+	font-size: 26px;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.78);
+	margin: 0 0 16px;
+}
+.roam-section-frame em,
+.roam-section-frame i {
+	font-style: italic;
+	color: var(--roam-accent, #7df9c4);
+}
+.roam-section-frame strong,
+.roam-section-frame b {
+	color: var(--roam-accent, #7df9c4);
+}
+.roam-section-frame a {
+	color: var(--roam-accent, #7df9c4);
+	text-decoration: none;
+	border-bottom: 1px solid currentColor;
+}
+
+/* Button defaults */
+.roam-section-frame .wp-block-button .wp-block-button__link {
+	font-size: 20px;
+	font-weight: 600;
+	padding: 18px 32px;
+	border-radius: 10px;
+	background: #f3f3f7;
+	color: #0a0a10;
+	border: none;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.roam-section-frame .wp-block-button.is-style-outline .wp-block-button__link {
+	background: transparent;
+	color: #f3f3f7;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.roam-section-frame .wp-block-buttons {
+	gap: 14px;
+	margin-top: 28px;
+}
+
+/* Column layout: more breathing room than core defaults */
+.roam-section-frame .wp-block-columns {
+	gap: 48px;
+	margin-top: 32px;
+	color: rgba(255, 255, 255, 0.85);
+}
+.roam-section-frame .wp-block-columns p {
+	font-size: 22px;
+	line-height: 1.5;
+}
+
+/* Section eyebrow — a small heading 6 can act as a label */
+.roam-section-frame h6 {
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--roam-accent, #7df9c4);
+	margin: 0 0 18px;
+}
+
+/* Lists */
+.roam-section-frame ul,
+.roam-section-frame ol {
+	font-size: 22px;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.85);
+	padding-left: 1.2em;
+}
+.roam-section-frame li::marker {
+	color: var(--roam-accent, #7df9c4);
+}
+
+/* Quote */
+.roam-section-frame .wp-block-quote {
+	border-left: 4px solid var(--roam-accent, #7df9c4);
+	padding-left: 24px;
+	font-size: 32px;
+	line-height: 1.4;
+	font-style: italic;
+	margin: 24px 0;
+}
+
+/* Image — fit naturally inside the section */
+.roam-section-frame img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 12px;
+}
+
+/* Section-inner padding override: when content is rich (cover, columns)
+   the author may want full-bleed. Provide a utility class. */
+.roam-section-frame.is-full-bleed .roam-section-inner {
+	padding: 0;
+}

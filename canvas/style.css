@@ -1,0 +1,572 @@
+/* =====================================================================
+ * Roam Canvas — shared editor + frontend styles
+ * ===================================================================== */
+
+:root {
+	--roam-bg: #0e0e12;
+	--roam-bg-2: #16161d;
+	--roam-grid: rgba(255, 255, 255, 0.06);
+	--roam-grid-strong: rgba(255, 255, 255, 0.12);
+	--roam-ink: #f3f3f7;
+	--roam-accent: #7df9c4;
+	--roam-accent-2: #b39dff;
+}
+
+/* ---------- Frontend canvas ----------------------------------------- */
+
+.wp-block-roam-canvas {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	background: radial-gradient(
+			1200px 800px at 30% 20%,
+			#1a1a26 0%,
+			var(--roam-bg) 70%
+		),
+		var(--roam-bg);
+	color: var(--roam-ink);
+	border-radius: 14px;
+	cursor: grab;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+	outline: none;
+	isolation: isolate;
+	box-shadow:
+		inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+		0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+.wp-block-roam-canvas.is-grabbing { cursor: grabbing; }
+.wp-block-roam-canvas:focus-visible {
+	box-shadow:
+		inset 0 0 0 2px var(--roam-accent),
+		0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+
+.wp-block-roam-canvas .roam-world {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: 0 0;
+	will-change: transform;
+	background: var(--roam-bg-2);
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.wp-block-roam-canvas .roam-world.has-grid {
+	background-image:
+		linear-gradient( to right, var(--roam-grid) 1px, transparent 1px ),
+		linear-gradient( to bottom, var(--roam-grid) 1px, transparent 1px ),
+		linear-gradient( to right, var(--roam-grid-strong) 1px, transparent 1px ),
+		linear-gradient( to bottom, var(--roam-grid-strong) 1px, transparent 1px ),
+		var(--roam-bg-2);
+	background-size:
+		40px 40px,
+		40px 40px,
+		200px 200px,
+		200px 200px;
+}
+
+/* Floating control pill (bottom-right) */
+.wp-block-roam-canvas .roam-controls {
+	position: absolute;
+	right: 14px;
+	bottom: 14px;
+	display: inline-flex;
+	gap: 4px;
+	padding: 4px;
+	background: rgba(20, 20, 28, 0.78);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 999px;
+	z-index: 3;
+}
+.wp-block-roam-canvas .roam-ctrl {
+	all: unset;
+	box-sizing: border-box;
+	width: 32px;
+	height: 32px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	color: var(--roam-ink);
+	font: 600 16px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	cursor: pointer;
+	transition: background 120ms ease, transform 120ms ease;
+}
+.wp-block-roam-canvas .roam-ctrl:hover { background: rgba(255, 255, 255, 0.08); }
+.wp-block-roam-canvas .roam-ctrl:active { transform: scale(0.92); }
+
+.wp-block-roam-canvas .roam-hint {
+	position: absolute;
+	left: 14px;
+	bottom: 14px;
+	padding: 6px 10px;
+	font: 500 11px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	letter-spacing: 0.04em;
+	color: rgba(255, 255, 255, 0.6);
+	background: rgba(20, 20, 28, 0.6);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: 999px;
+	pointer-events: none;
+	z-index: 3;
+	transition: opacity 600ms ease, transform 600ms ease;
+}
+.wp-block-roam-canvas .roam-hint.is-fading {
+	opacity: 0;
+	transform: translateY(4px);
+}
+
+/* ---------- Editor surface ------------------------------------------ */
+
+.roam-editor-viewport {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	min-height: 480px;
+	background: radial-gradient(
+			1200px 800px at 30% 20%,
+			#1a1a26 0%,
+			var(--roam-bg) 70%
+		),
+		var(--roam-bg);
+	color: var(--roam-ink);
+	border-radius: 14px;
+	cursor: grab;
+	touch-action: none;
+	user-select: none;
+	isolation: isolate;
+	box-shadow:
+		inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+		0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+.roam-editor-viewport.is-panning { cursor: grabbing; }
+
+.roam-editor-viewport .roam-editor-world {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: 0 0;
+	will-change: transform;
+	background: var(--roam-bg-2);
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.roam-editor-viewport .roam-editor-world.has-grid {
+	background-image:
+		linear-gradient( to right, var(--roam-grid) 1px, transparent 1px ),
+		linear-gradient( to bottom, var(--roam-grid) 1px, transparent 1px ),
+		linear-gradient( to right, var(--roam-grid-strong) 1px, transparent 1px ),
+		linear-gradient( to bottom, var(--roam-grid-strong) 1px, transparent 1px ),
+		var(--roam-bg-2);
+	background-size:
+		40px 40px,
+		40px 40px,
+		200px 200px,
+		200px 200px;
+}
+
+/* Editor HUD — local zoom + add controls */
+.roam-editor-hud {
+	position: absolute;
+	right: 14px;
+	bottom: 14px;
+	display: inline-flex;
+	gap: 4px;
+	padding: 4px;
+	background: rgba(20, 20, 28, 0.85);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 999px;
+	z-index: 5;
+}
+.roam-editor-hud-btn {
+	all: unset;
+	box-sizing: border-box;
+	min-width: 32px;
+	height: 32px;
+	padding: 0 10px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	color: var(--roam-ink);
+	font: 600 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	cursor: pointer;
+}
+.roam-editor-hud-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.roam-editor-hud-add {
+	background: linear-gradient(135deg, var(--roam-accent), var(--roam-accent-2));
+	color: #0a0a10;
+}
+.roam-editor-hud-add:hover { filter: brightness(1.05); }
+
+.roam-editor-hint {
+	position: absolute;
+	left: 14px;
+	bottom: 14px;
+	padding: 6px 10px;
+	font: 500 11px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	letter-spacing: 0.04em;
+	color: rgba(255, 255, 255, 0.55);
+	background: rgba(20, 20, 28, 0.6);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: 999px;
+	pointer-events: none;
+	z-index: 5;
+}
+
+/* Suppress the default editor block layout fighting our absolute positioning. */
+.roam-editor-world .block-editor-block-list__layout,
+.roam-editor-world {
+	display: block;
+}
+
+/* =====================================================================
+ * Stacked editor view (nested-zoom mode in the editor)
+ * Sections render as a normal vertical stack — no world transform.
+ * ===================================================================== */
+
+.roam-editor-canvas-stacked {
+	position: relative;
+	padding: 24px;
+	background: linear-gradient(180deg, #0e0e12 0%, #15151c 100%);
+	color: #f3f3f7;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 16px;
+	min-height: 200px;
+}
+
+.roam-editor-canvas-stacked::before {
+	content: 'ROAM CANVAS · nested-zoom mode';
+	display: block;
+	font: 600 10px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: rgba(125, 249, 196, 0.75);
+	margin-bottom: 12px;
+	padding-left: 4px;
+}
+
+.roam-editor-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+/* ---- Section switcher (sticky tab bar at the top of the stack) ---- */
+
+.roam-editor-section-switcher {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	margin: -24px -24px 16px;
+	padding: 12px 16px 10px;
+	background: rgba(14, 14, 18, 0.92);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 16px 16px 0 0;
+}
+
+.roam-editor-section-switcher-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.roam-editor-section-switcher-label {
+	font: 600 10px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: rgba(125, 249, 196, 0.7);
+}
+
+.roam-editor-section-switcher-add {
+	all: unset;
+	box-sizing: border-box;
+	padding: 4px 10px;
+	background: rgba(125, 249, 196, 0.12);
+	color: var(--roam-accent, #7df9c4);
+	border: 1px solid rgba(125, 249, 196, 0.3);
+	border-radius: 999px;
+	font: 600 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	cursor: pointer;
+	transition: background 120ms ease, color 120ms ease;
+}
+.roam-editor-section-switcher-add:hover {
+	background: linear-gradient(135deg, var(--roam-accent, #7df9c4), var(--roam-accent-2, #b39dff));
+	color: #0a0a10;
+}
+
+.roam-editor-section-switcher-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.roam-editor-section-switcher-empty {
+	font: 500 12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	color: rgba(255, 255, 255, 0.5);
+	padding: 4px 0;
+}
+
+.roam-editor-section-tab {
+	all: unset;
+	box-sizing: border-box;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 10px 5px 5px;
+	background: rgba(255, 255, 255, 0.04);
+	color: rgba(255, 255, 255, 0.75);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 999px;
+	font: 500 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	cursor: pointer;
+	transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.roam-editor-section-tab:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.roam-editor-section-tab.is-active {
+	background: linear-gradient(135deg, rgba(125, 249, 196, 0.18), rgba(179, 157, 255, 0.18));
+	border-color: rgba(125, 249, 196, 0.5);
+	color: #fff;
+}
+
+.roam-editor-section-tab-num {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: rgba(125, 249, 196, 0.16);
+	color: var(--roam-accent, #7df9c4);
+	font-size: 10px;
+	font-weight: 700;
+}
+
+.roam-editor-section-tab.is-active .roam-editor-section-tab-num {
+	background: linear-gradient(135deg, var(--roam-accent, #7df9c4), var(--roam-accent-2, #b39dff));
+	color: #0a0a10;
+}
+
+.roam-editor-section-tab-label {
+	font-weight: 500;
+	max-width: 160px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.roam-editor-hint-stacked {
+	position: static;
+	display: inline-block;
+	margin-top: 16px;
+	opacity: 0.8;
+}
+
+/* =====================================================================
+ * Fullscreen viewport — true overlay covering theme chrome
+ * ===================================================================== */
+
+.wp-block-roam-canvas.is-fullscreen {
+	position: fixed;
+	inset: 0;
+	width: 100vw;
+	height: 100vh;
+	max-width: 100vw;
+	aspect-ratio: auto;
+	border-radius: 0;
+	margin: 0;
+	z-index: 1000;
+}
+
+/* When a fullscreen Roam exists on the page, prevent body scroll behind it. */
+body:has(.wp-block-roam-canvas.is-fullscreen) {
+	overflow: hidden;
+}
+
+/* Above the WP admin bar (admin bar uses z-index ~99999), step around it. */
+body.admin-bar .wp-block-roam-canvas.is-fullscreen {
+	top: 32px;
+	height: calc(100vh - 32px);
+}
+@media (max-width: 782px) {
+	body.admin-bar .wp-block-roam-canvas.is-fullscreen {
+		top: 46px;
+		height: calc(100vh - 46px);
+	}
+}
+
+/* =====================================================================
+ * Anchor menu
+ * ===================================================================== */
+
+.wp-block-roam-canvas .roam-anchor-menu {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	display: inline-flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 6px;
+	background: rgba(20, 20, 28, 0.78);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 12px;
+	z-index: 4;
+	max-height: calc(100% - 28px);
+	overflow-y: auto;
+	min-width: 160px;
+}
+
+.wp-block-roam-canvas .roam-anchor-btn {
+	all: unset;
+	box-sizing: border-box;
+	padding: 8px 14px;
+	font: 500 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	letter-spacing: 0.02em;
+	color: rgba(255, 255, 255, 0.7);
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background 140ms ease, color 140ms ease, transform 120ms ease;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.wp-block-roam-canvas .roam-anchor-btn:hover {
+	background: rgba(255, 255, 255, 0.06);
+	color: var(--roam-ink);
+}
+
+.wp-block-roam-canvas .roam-anchor-btn.is-active {
+	background: linear-gradient(135deg, rgba(125, 249, 196, 0.18), rgba(179, 157, 255, 0.18));
+	color: var(--roam-ink);
+	box-shadow: inset 0 0 0 1px rgba(125, 249, 196, 0.35);
+}
+
+.wp-block-roam-canvas .roam-anchor-btn:active {
+	transform: scale(0.97);
+}
+
+/* Anchor-node visual indicator (editor only) */
+.roam-editor-node.is-anchored::before,
+.roam-editor-node[data-anchor-name]::before {
+	content: '⚓ ' attr(data-anchor-name);
+	position: absolute;
+	top: -22px;
+	left: 0;
+	padding: 2px 8px;
+	font: 600 10px/1.4 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #0a0a10;
+	background: linear-gradient(135deg, var(--roam-accent), var(--roam-accent-2));
+	border-radius: 4px;
+	pointer-events: none;
+}
+
+/* Subtle outline on anchored nodes (frontend, only when zooming out) */
+.wp-block-roam-canvas .roam-node.is-anchored {
+	box-shadow: 0 0 0 1px rgba(125, 249, 196, 0.10);
+}
+
+/* No opacity transition in nested mode — sections pop in/out so each next
+   world genuinely starts as a tiny dot and grows from there. */
+.wp-block-roam-canvas[data-nested-zoom="1"] .roam-node.is-anchored {
+	transition: none;
+	will-change: opacity, transform;
+	/* Force GPU layer + flat 2D rendering to stabilize subpixel positioning
+	   when nested transforms compound at extreme zoom. */
+	transform-style: flat;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.wp-block-roam-canvas[data-nested-zoom="1"] .roam-node.is-anchored > div {
+	/* Inner scaled wrapper also gets a GPU layer to prevent compounding
+	   subpixel jitter through nested transform layers. */
+	will-change: transform;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.wp-block-roam-canvas[data-nested-zoom="1"] .roam-world {
+	transform-style: flat;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+/* In nested-zoom mode, sections should occupy EXACTLY their inline width/height
+   without the default node padding/border/backdrop adding extra pixels.
+   Otherwise tiny sections (e.g., 20px wide) can't shrink below ~42px. */
+.wp-block-roam-canvas[data-nested-zoom="1"] .roam-node {
+	padding: 0;
+	border: none;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}
+.wp-block-roam-canvas[data-nested-zoom="1"] .roam-node:hover {
+	border: none;
+	box-shadow: none;
+}
+
+/* =====================================================================
+ * Nested-zoom progress dots
+ * ===================================================================== */
+
+.wp-block-roam-canvas .roam-progress {
+	position: absolute;
+	left: 50%;
+	bottom: 22px;
+	transform: translateX(-50%);
+	display: inline-flex;
+	gap: 8px;
+	padding: 8px 12px;
+	background: rgba(20, 20, 28, 0.72);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: 999px;
+	z-index: 4;
+}
+
+.wp-block-roam-canvas .roam-progress-dot {
+	all: unset;
+	box-sizing: border-box;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.18);
+	cursor: pointer;
+	transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.wp-block-roam-canvas .roam-progress-dot:hover {
+	background: rgba(255, 255, 255, 0.35);
+}
+.wp-block-roam-canvas .roam-progress-dot.is-passed {
+	background: rgba(125, 249, 196, 0.5);
+}
+.wp-block-roam-canvas .roam-progress-dot.is-active {
+	background: linear-gradient(135deg, var(--roam-accent), var(--roam-accent-2));
+	transform: scale(1.6);
+	box-shadow: 0 0 12px rgba(125, 249, 196, 0.4);
+}

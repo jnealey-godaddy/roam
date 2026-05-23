@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "roam/node",
+	"version": "1.1.0",
+	"title": "Roam Node",
+	"category": "design",
+	"icon": "move",
+	"description": "A freely positioned node inside a Roam Canvas. Drag to move; put anything inside.",
+	"parent": ["roam/canvas"],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"inserter": true
+	},
+	"attributes": {
+		"x":            { "type": "number", "default": 0 },
+		"y":            { "type": "number", "default": 0 },
+		"width":        { "type": "number", "default": 320 },
+		"rotation":     { "type": "number", "default": 0 },
+		"anchorName":   { "type": "string", "default": "" },
+		"anchorLabel":  { "type": "string", "default": "" },
+		"frameZoom":    { "type": "number", "default": 1 },
+		"framePadding": { "type": "number", "default": 60 }
+	},
+	"textdomain": "roam",
+	"editorScript": "file:./editor.js",
+	"style":        "file:./style.css",
+	"editorStyle":  "file:./style.css"
+}
